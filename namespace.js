@@ -1,34 +1,106 @@
 const asyncHooks = require('async_hooks')
 
-module.exports = class NameSpace {
+let topAsyncId = -1
 
-  constructor() {
-    this.context = {}
-  }
-
-  init(fn) {
-    const asyncId = asyncHooks.executionAsyncId()
-    this.context[asyncId] = {}
-    fn && fn()
+class NameSpace {
+  constructor(name) {
+    this.activeContext = null
+    this.name = name
+    this.contextList = []
+    this.contexts = new Map()
   }
 
   set(key, val) {
-    const asyncId = asyncHooks.executionAsyncId()
-    const context = this.context[asyncId]
-    if (!context) {
-      return
+    if (!this.activeContext) {
+      throw new Error('No active context available.')
     }
-    context[key] = val
+    this.activeContext[key] = val
     return true
   }
 
   get(key) {
-    const asyncId = asyncHooks.executionAsyncId()
-    const context = this.context[asyncId]
-    if (!context) {
-      return
+    if (!this.activeContext) {
+      return undefined
     }
-    return context[key]
+    return this.activeContext[key]
   }
 
+  createContext() {
+    return {
+      ...(this.activeContext || {}),
+      _ns_name: this.name,
+      id: topAsyncId
+    }
+  }
+
+  init() {
+    this.enter(this.createContext())
+  }
+
+  enter(context) {
+    this.contextList.push(this.activeContext)
+    this.activeContext = context
+  }
+
+  exit(context) {
+    if (this.activeContext === context) {
+      this.activeContext = this.contextList.pop()
+      return
+    }
+
+    const index = this.contextList.lastIndexOf(context)
+    if (~index) {
+      this.contextList.splice(index, 1)
+    }
+  }
+}
+
+module.exports = name => {
+  const namespace = new NameSpace(name);
+  namespace.id = topAsyncId
+
+  asyncHooks.createHook({
+    init: (asyncId, type, triggerId, resource) => {
+      topAsyncId = asyncHooks.executionAsyncId()
+
+      if (namespace.activeContext) {
+        namespace.contexts.set(asyncId, namespace.activeContext)
+      } else if (topAsyncId === 0) {
+        // CurrentId will be 0 when triggered from C++. Promise events
+        // https://github.com/nodejs/node/blob/master/doc/api/async_hooks.md#triggerid
+        const triggerId = asyncHooks.triggerAsyncId()
+        const triggerIdContext = namespace.contexts.get(triggerId)
+        if (triggerIdContext) {
+          namespace.contexts.set(asyncId, triggerIdContext)
+        }
+      }
+    },
+
+    before: asyncId => {
+      topAsyncId = asyncHooks.executionAsyncId()
+
+      const context = namespace.contexts.get(asyncId) || namespace.contexts.get(topAsyncId)
+      if (context) {
+        namespace.enter(context)
+      }
+    },
+
+    after: asyncId => {
+      topAsyncId = asyncHooks.executionAsyncId()
+
+      const context = namespace.contexts.get(asyncId) || namespace.contexts.get(topAsyncId)
+      if (context) {
+        namespace.exit(context)
+      }
+    },
+
+    destroy: asyncId => {
+      topAsyncId = asyncHooks.executionAsyncId()
+
+      namespace.contexts.delete(asyncId)
+    }
+  })
+    .enable()
+
+  return namespace
 }

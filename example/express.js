@@ -1,11 +1,23 @@
 const util = require('util')
 const request = require('request')
 const express = require('express')
+const asyncHooks = require('async_hooks')
 const httpRequestContext = require('../')
 
 var app = express();
 
 app.use(httpRequestContext.middleware);
+
+app.use((req, res, next) => {
+  const start = Date.now()
+  res.on('close', () => {
+    console.log('close', httpRequestContext.get('user'))
+  })
+  res.once('finish', () => {
+    console.log('finish', asyncHooks.executionAsyncId(), httpRequestContext.get('user'), req.query)
+  })
+  next()
+})
 
 app.use((req, res, next) => {
   httpRequestContext.set('user', 'user')

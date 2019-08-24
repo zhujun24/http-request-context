@@ -1,6 +1,6 @@
-const nameSpace = require('./hook')
+const createNameSpace = require('./namespace')
 
-const ns = nameSpace.createNameSpace('__HTTP_REQUEST_CONTEXT__')
+const ns = createNameSpace('__HTTP_REQUEST_CONTEXT__')
 
 ns.middleware = (req, res, next) => {
   ns.init()

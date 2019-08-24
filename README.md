@@ -36,7 +36,7 @@ app.use((req, res, next) => {
 ```js
 const httpRequestContext = require('http-request-context')
 
-httpRequestContext.set('foo') // 'bar'
+httpRequestContext.get('foo') // 'bar'
 ```
 
 ## Tips
@@ -47,7 +47,7 @@ If you init mysql connect before http server start, you may get context undefine
 
 ```js
 mysqlConnection.query('SELECT * FROM table', (error, results, fields) => {
-  httpRequestContext.set('foo') // undefined
+  httpRequestContext.get('foo') // undefined
 })
 ```
 
@@ -56,7 +56,7 @@ You can use util.promisify to avoid it.
 ```js
 util.promisify(mysqlConnection.query).bind(mysqlConnection)('SELECT * FROM table')
   .then((results, fields) => {
-    httpRequestContext.set('foo') // 'bar'
+    httpRequestContext.get('foo') // 'bar'
   })
   .catch(error => {})
 ```
