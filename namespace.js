@@ -3,9 +3,8 @@ const asyncHooks = require('async_hooks')
 let topAsyncId = -1
 
 class NameSpace {
-  constructor(name) {
+  constructor() {
     this.activeContext = null
-    this.name = name
     this.contextList = []
     this.contexts = new Map()
   }
@@ -26,11 +25,7 @@ class NameSpace {
   }
 
   createContext() {
-    return {
-      ...(this.activeContext || {}),
-      _ns_name: this.name,
-      id: topAsyncId
-    }
+    return this.activeContext || {}
   }
 
   init() {
@@ -55,9 +50,8 @@ class NameSpace {
   }
 }
 
-module.exports = name => {
-  const namespace = new NameSpace(name);
-  namespace.id = topAsyncId
+module.exports = () => {
+  const namespace = new NameSpace();
 
   asyncHooks.createHook({
     init: (asyncId, type, triggerId, resource) => {
