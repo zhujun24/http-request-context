@@ -44,4 +44,6 @@ bower_components/
 .tern-project
 cscope.*
 
+# nyc coverage
+.nyc_output/
 

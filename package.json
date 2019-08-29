@@ -1,15 +1,23 @@
 {
   "name": "http-request-context",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Store context in http middleware lifecycle.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "fix": "standard \"**/**.js\" --fix",
+    "lint": "standard \"**/**.js\"",
+    "test": "mocha --exit",
+    "coverage": "nyc --reporter=text --reporter=lcov npm test"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/zhujun24/http-request-context.git"
   },
+  "pre-commit": [
+    "lint",
+    "test",
+    "coverage"
+  ],
   "keywords": [
     "http",
     "request",
@@ -22,7 +30,15 @@
   },
   "homepage": "https://github.com/zhujun24/http-request-context#readme",
   "devDependencies": {
+    "assert": "^2.0.0",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
     "express": "^4.17.1",
-    "request": "^2.88.0"
+    "koa": "^2.8.1",
+    "mocha": "^6.2.0",
+    "nyc": "^14.1.1",
+    "pre-commit": "^1.2.2",
+    "request": "^2.88.0",
+    "standard": "^14.1.0"
   }
 }

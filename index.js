@@ -2,8 +2,8 @@ const asyncHooks = require('async_hooks')
 
 const contexts = {}
 const rootAsyncIdQueueMap = {}
-const INTERVAL = 1000
-const ID_TIMEOUT = 60000
+const INTERVAL = 10000
+const ID_TIMEOUT = 150000
 
 // delete asyncId map 60s ago every second
 const interval = () => {
@@ -28,15 +28,6 @@ const findRootId = (id) => {
     }
     return findRootId(contexts[id].id)
   }
-}
-
-const removeAsyncId = id => {
-  Object.keys(contexts).forEach(cacheId => {
-    if (contexts[cacheId].id === id) {
-      delete contexts[cacheId]
-      removeAsyncId(cacheId)
-    }
-  })
 }
 
 asyncHooks.createHook({
@@ -76,6 +67,12 @@ module.exports = {
     contexts[executionAsyncId].data = {}
     rootAsyncIdQueueMap[executionAsyncId] = []
     next()
+  },
+  koaMiddleware: async (ctx, next) => {
+    const executionAsyncId = asyncHooks.executionAsyncId()
+    contexts[executionAsyncId].data = {}
+    rootAsyncIdQueueMap[executionAsyncId] = []
+    await next()
   },
   set: (key, value) => {
     const rootId = findRootId(asyncHooks.executionAsyncId())
