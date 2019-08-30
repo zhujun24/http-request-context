@@ -3,18 +3,23 @@ const asyncHooks = require('async_hooks')
 const contexts = {}
 const rootAsyncIdQueueMap = {}
 const INTERVAL = 10000
-const ID_TIMEOUT = 150000
+const ASYNC_ID_TIMEOUT = 150000
 
 // delete asyncId map 60s ago every second
 const interval = () => {
   setTimeout(interval, INTERVAL)
+
   const now = Date.now()
-  Object.keys(contexts).forEach((id, index) => {
-    // skip first TCPWRAP asyncId
-    if (index && now - contexts[id].__tm > ID_TIMEOUT) {
-      delete contexts[id]
+  const asyncIds = Object.keys(contexts)
+  asyncIds.shift() // skip first TCPWRAP asyncId
+
+  for (const asyncId of asyncIds) {
+    if (now - contexts[asyncId].__tm < ASYNC_ID_TIMEOUT) {
+      break
+    } else {
+      delete contexts[asyncId]
     }
-  })
+  }
 }
 setTimeout(interval, INTERVAL)
 

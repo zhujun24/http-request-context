@@ -14,7 +14,7 @@ Install: `npm install http-request-context --save`
 
 ### Express
 
-#### Init
+##### Init
 
 ```js
 const httpRequestContext = require('http-request-context')
@@ -22,7 +22,7 @@ const httpRequestContext = require('http-request-context')
 app.use(httpRequestContext.middleware)
 ```
 
-### Set Context
+##### Set Context
 
 ```js
 const httpRequestContext = require('http-request-context')
@@ -36,7 +36,7 @@ app.use((req, res, next) => {
 })
 ```
 
-### Get Context
+##### Get Context
 
 ```js
 const httpRequestContext = require('http-request-context')
@@ -46,7 +46,7 @@ httpRequestContext.get('foo') // 'bar'
 
 ### Koa
 
-#### Init
+##### Init
 
 ```js
 const httpRequestContext = require('http-request-context')
@@ -54,7 +54,7 @@ const httpRequestContext = require('http-request-context')
 app.use(httpRequestContext.koaMiddleware)
 ```
 
-### Set Context
+##### Set Context
 
 ```js
 const httpRequestContext = require('http-request-context')
@@ -103,5 +103,5 @@ util.promisify(mysqlConnection.query).bind(mysqlConnection)('SELECT * FROM table
 
 ## TODO
 
-- [ ] Get undefined in koa close callback
+- [ ] Get undefined in close callback
 - [ ] Get undefined in borderline case

@@ -1,6 +1,5 @@
 const util = require('util')
 const express = require('express')
-const asyncHooks = require('async_hooks')
 const httpRequestContext = require('../')
 
 var app = express()
@@ -12,7 +11,7 @@ app.use((req, res, next) => {
     console.log('close', httpRequestContext.get('user'))
   })
   res.once('finish', () => {
-    console.log('finish', asyncHooks.executionAsyncId(), httpRequestContext.get('user'))
+    console.log('finish', httpRequestContext.get('user'))
   })
   next()
 })

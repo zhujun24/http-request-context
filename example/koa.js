@@ -1,6 +1,5 @@
 const util = require('util')
 const Koa = require('koa')
-const asyncHooks = require('async_hooks')
 const httpRequestContext = require('../')
 
 const app = new Koa()
@@ -12,7 +11,7 @@ app.use(async (ctx, next) => {
     console.log('close', httpRequestContext.get('user'))
   })
   ctx.res.on('finish', () => {
-    console.log('finish', asyncHooks.executionAsyncId(), httpRequestContext.get('user'))
+    console.log('finish', httpRequestContext.get('user'))
   })
   await next()
 })
