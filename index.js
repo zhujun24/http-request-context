@@ -2,8 +2,8 @@ const asyncHooks = require('async_hooks')
 
 const contexts = {}
 const rootAsyncIdQueueMap = {}
-const INTERVAL = 10000
-const ASYNC_ID_TIMEOUT = 150000
+const INTERVAL = process.env.HTTP_REQUEST_CONTEXT_INTERVAL || 10000
+const ASYNC_ID_TIMEOUT = process.env.HTTP_REQUEST_CONTEXT_TIMEOUT || 150000
 
 // delete asyncId map 60s ago every second
 const interval = () => {

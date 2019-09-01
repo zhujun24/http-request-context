@@ -12,11 +12,20 @@
 
 Get and set request-scoped context anywhere.
 
-### Requirement
+## Requirement
 
-#### Nodejs version >= 8.2.0
+### Nodejs version >= 8.2.0
 
 This module uses the newer [async_hooks](https://github.com/nodejs/node/blob/master/doc/api/async_hooks.md) API which is considered `Experimental` by Nodejs.
+
+## Parameter
+
+Parameter configuration must be require before.
+
+|           |   Description  |  Default  |
+|:------------|:------------|:------------|
+| process.env.HTTP_REQUEST_CONTEXT_INTERVAL | remove expired context interval(ms) | 10000
+| process.env.HTTP_REQUEST_CONTEXT_TIMEOUT | context expire time(ms)| 150000
 
 ## How to Use
 

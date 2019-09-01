@@ -1,4 +1,8 @@
 /* eslint-disable no-undef */
+
+process.env.HTTP_REQUEST_CONTEXT_INTERVAL = 1000
+process.env.HTTP_REQUEST_CONTEXT_TIMEOUT = 1000
+
 const chai = require('chai')
 const chaiHttp = require('chai-http')
 const assert = require('assert')
@@ -12,6 +16,12 @@ const koaPort = 3005
 const expressApp = express()
 const koaApp = new Koa()
 
+// Ensure timer execution and increase coverage
+const sleep = () => new Promise(resolve => {
+  // large than interval and timeout
+  setTimeout(resolve, 1200)
+})
+
 chai.use(chaiHttp)
 
 describe('Express Middleware Test', function () {
@@ -22,7 +32,7 @@ describe('Express Middleware Test', function () {
       setTimeout(function () {
         httpRequestContext.set('key', 'value')
         next()
-      }, 300)
+      }, 100)
     })
 
     expressApp.use(function (req, res) {
@@ -32,6 +42,8 @@ describe('Express Middleware Test', function () {
     expressApp.listen(expressPort, function () {
       console.log(`Express is listening at port ${expressPort}`)
     })
+
+    await sleep()
 
     const response = await chai.request(`http://127.0.0.1:${expressPort}`).get('/')
 
@@ -49,7 +61,7 @@ describe('Koa Middleware Test', async function () {
         setTimeout(() => {
           httpRequestContext.set('key', 'value')
           resolve()
-        }, 300)
+        }, 100)
       })
       await next()
     })
@@ -61,6 +73,8 @@ describe('Koa Middleware Test', async function () {
     koaApp.listen(koaPort, function () {
       console.log(`Koa is listening at port ${koaPort}`)
     })
+
+    await sleep()
 
     const response = await chai.request(`http://127.0.0.1:${koaPort}`).get('/')
 

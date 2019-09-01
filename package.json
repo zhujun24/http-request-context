@@ -1,8 +1,12 @@
 {
   "name": "http-request-context",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Store context in http middleware lifecycle.",
   "main": "index.js",
+  "engines": {
+    "node": ">=8.2.0"
+  },
+  "engineStrict": true,
   "scripts": {
     "fix": "standard \"**/**.js\" --fix",
     "lint": "standard \"**/**.js\"",
