@@ -2,9 +2,12 @@
 
 [![npm package](https://nodei.co/npm/http-request-context.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/http-request-context)
 
-[![npm package](https://img.shields.io/npm/v/http-request-context.svg?style=flat-square)](https://www.npmjs.com/package/http-request-context)
-[![NPM downloads](https://img.shields.io/npm/dm/http-request-context.svg?style=flat-square)](https://www.npmjs.com/package/http-request-context)
-[![Dependency Status](https://david-dm.org/zhujun24/http-request-context.svg?style=flat-square)](https://www.npmjs.com/package/http-request-context)
+[![Build Status](https://travis-ci.org/zhujun24/http-request-context.svg)](https://travis-ci.org/zhujun24/http-request-context)
+[![Coverage Status](https://coveralls.io/repos/github/zhujun24/http-request-context/badge.svg?branch=master)](https://coveralls.io/github/zhujun24/http-request-context?branch=master)
+[![npm package](https://img.shields.io/npm/v/http-request-context.svg)](https://www.npmjs.com/package/http-request-context)
+[![NPM downloads](https://img.shields.io/npm/dm/http-request-context.svg)](https://www.npmjs.com/package/http-request-context)
+[![Dependency Status](https://david-dm.org/zhujun24/http-request-context.svg)](https://www.npmjs.com/package/http-request-context)
+[![Dependency Status](https://david-dm.org/zhujun24/http-request-context/dev-status.svg)](https://www.npmjs.com/package/http-request-context)
 [![Standard - JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://www.npmjs.com/package/http-request-context)
 
 Get and set request-scoped context anywhere.
@@ -13,7 +16,7 @@ Get and set request-scoped context anywhere.
 
 #### Nodejs version >= 8.2.0
 
-his module uses the newer [async_hooks](https://github.com/nodejs/node/blob/master/doc/api/async_hooks.md) API which is considered `Experimental` by Nodejs.
+This module uses the newer [async_hooks](https://github.com/nodejs/node/blob/master/doc/api/async_hooks.md) API which is considered `Experimental` by Nodejs.
 
 ## How to Use
 

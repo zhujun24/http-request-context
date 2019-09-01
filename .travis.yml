@@ -1,7 +1,15 @@
-script:
-  - "npm test"
+sudo: false
 
 language: node_js
+
+install:
+  - npm install coveralls -g
+
+script:
+  - npm test
+
+after_success:
+ - nyc npm test && nyc report --reporter=text-lcov | coveralls
 
 node_js:
   - "8.2"
