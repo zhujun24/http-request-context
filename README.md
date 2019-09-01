@@ -1,12 +1,19 @@
 # HTTP Request Context
 
-[![npm package](https://nodei.co/npm/http-request-context.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/request/)
+[![npm package](https://nodei.co/npm/http-request-context.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/http-request-context)
 
-[![npm package](https://img.shields.io/npm/v/http-request-context.svg?style=flat-square)](https://www.npmjs.org/package/http-request-context)
-[![NPM downloads](https://img.shields.io/npm/dm/http-request-context.svg?style=flat-square)](https://npmjs.org/package/http-request-context)
-[![Dependency Status](https://david-dm.org/zhujun24/http-request-context.svg?style=flat-square)](https://david-dm.org/zhujun24/http-request-context)
+[![npm package](https://img.shields.io/npm/v/http-request-context.svg?style=flat-square)](https://www.npmjs.com/package/http-request-context)
+[![NPM downloads](https://img.shields.io/npm/dm/http-request-context.svg?style=flat-square)](https://www.npmjs.com/package/http-request-context)
+[![Dependency Status](https://david-dm.org/zhujun24/http-request-context.svg?style=flat-square)](https://www.npmjs.com/package/http-request-context)
+[![Standard - JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://www.npmjs.com/package/http-request-context)
 
 Get and set request-scoped context anywhere.
+
+### Requirement
+
+#### Nodejs version >= 8.2.0
+
+his module uses the newer [async_hooks](https://github.com/nodejs/node/blob/master/doc/api/async_hooks.md) API which is considered `Experimental` by Nodejs.
 
 ## How to Use
 
@@ -71,7 +78,7 @@ app.use(async (ctx, next) => {
 })
 ```
 
-### Get Context
+##### Get Context
 
 ```js
 const httpRequestContext = require('http-request-context')
@@ -104,4 +111,3 @@ util.promisify(mysqlConnection.query).bind(mysqlConnection)('SELECT * FROM table
 ## TODO
 
 - [ ] Get undefined in close callback
-- [ ] Get undefined in borderline case
