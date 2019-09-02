@@ -1,9 +1,9 @@
 const asyncHooks = require('async_hooks')
 
-const contexts = {}
-const rootAsyncIdQueueMap = {}
-const INTERVAL = process.env.HTTP_REQUEST_CONTEXT_INTERVAL || 10000
-const ASYNC_ID_TIMEOUT = process.env.HTTP_REQUEST_CONTEXT_TIMEOUT || 150000
+const contexts = {} // all callstack map
+const rootAsyncIdQueueMap = {} // request root callstack
+const INTERVAL = process.env.HTTP_REQUEST_CONTEXT_INTERVAL || 10000 // remove expired context interval
+const ASYNC_ID_TIMEOUT = process.env.HTTP_REQUEST_CONTEXT_TIMEOUT || 150000 // context expire time (must be longer than full cycle of a request)
 
 // delete asyncId map 60s ago every second
 const interval = () => {
@@ -23,6 +23,7 @@ const interval = () => {
 }
 setTimeout(interval, INTERVAL)
 
+// find callstack root
 const findRootId = (id) => {
   if (!id) {
     return
@@ -47,12 +48,14 @@ asyncHooks.createHook({
       rootAsyncIdQueueMap[asyncId] = []
     }
 
+    // push asyncId to root callstack
     const rootID = findRootId(asyncId)
     if (rootID) {
       rootAsyncIdQueueMap[rootID].push(asyncId)
     }
   },
   destroy (asyncId) {
+    // delete root & all callstack
     if (rootAsyncIdQueueMap[asyncId]) {
       delete contexts[asyncId]
       rootAsyncIdQueueMap[asyncId].forEach(id => {

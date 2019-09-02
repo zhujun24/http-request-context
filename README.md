@@ -10,7 +10,7 @@
 [![Dependency Status](https://david-dm.org/zhujun24/http-request-context/dev-status.svg)](https://www.npmjs.com/package/http-request-context)
 [![Standard - JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://www.npmjs.com/package/http-request-context)
 
-Get and set request-scoped context anywhere.
+Set and get request-scoped context anywhere.
 
 ## Requirement
 
@@ -20,12 +20,16 @@ This module uses the newer [async_hooks](https://github.com/nodejs/node/blob/mas
 
 ## Parameter
 
-Parameter configuration must be require before.
+Parameter configuration must be require before, but normally no config are required.
 
-|           |   Description  |  Default  |
+| Name | Description | Default |
 |:------------|:------------|:------------|
 | process.env.HTTP_REQUEST_CONTEXT_INTERVAL | remove expired context interval(ms) | 10000
 | process.env.HTTP_REQUEST_CONTEXT_TIMEOUT | context expire time(ms)| 150000
+
+## Example
+
+see [example](https://github.com/zhujun24/http-request-context/tree/master/example)
 
 ## How to Use
 
@@ -100,6 +104,10 @@ httpRequestContext.get('foo') // 'bar'
 
 ## Tips
 
+### Event: '[close](https://nodejs.org/api/http.html#http_event_close_1)'
+
+`Do not get context in http.ServerResponse close callback`. Indicates that the underlying connection was terminated, the http request callstack is out of middleware, so there is no way to associate context.
+
 ### MySQL
 
 If you init mysql connect before http server start, you may get context undefined in mysql query callback scope.
@@ -119,7 +127,3 @@ util.promisify(mysqlConnection.query).bind(mysqlConnection)('SELECT * FROM table
   })
   .catch(error => {})
 ```
-
-## TODO
-
-- [ ] Get undefined in close callback
