@@ -7,7 +7,7 @@ const app = new Koa()
 app.use(httpRequestContext.koaMiddleware)
 
 app.use(async (ctx, next) => {
-  ctx.res.once('finish', () => {
+  ctx.res.on('finish', () => {
     console.log('finish', httpRequestContext.get('user'))
   })
   await next()

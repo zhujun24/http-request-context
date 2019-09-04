@@ -7,7 +7,7 @@ var app = express()
 app.use(httpRequestContext.middleware)
 
 app.use((req, res, next) => {
-  res.once('finish', () => {
+  res.on('finish', () => {
     console.log('finish', httpRequestContext.get('user'))
   })
   next()
