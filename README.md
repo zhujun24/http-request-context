@@ -104,10 +104,6 @@ httpRequestContext.get('foo') // 'bar'
 
 ## Tips
 
-### Event: '[close](https://nodejs.org/api/http.html#http_event_close_1)'
-
-`Do not get context in http.ServerResponse close callback`. Indicates that the underlying connection was terminated, the http request callstack is out of middleware, so there is no way to associate context.
-
 ### MySQL
 
 If you init mysql connect before http server start, you may get context undefined in mysql query callback scope.

@@ -10,10 +10,8 @@ const interval = () => {
   setTimeout(interval, INTERVAL)
 
   const now = Date.now()
-  const asyncIds = Object.keys(contexts)
-  asyncIds.shift() // skip first TCPWRAP asyncId
 
-  for (const asyncId of asyncIds) {
+  for (const asyncId of Object.keys(contexts)) {
     if (now - contexts[asyncId].__tm < ASYNC_ID_TIMEOUT) {
       break
     } else {
@@ -36,22 +34,29 @@ const findRootId = (id) => {
   }
 }
 
+// find TCPWrap root
+const findTCPWrapAsyncId = asyncId => {
+  if (contexts[asyncId]) {
+    if (contexts[asyncId].type === 'TCPWRAP') {
+      return asyncId
+    }
+    return findTCPWrapAsyncId(asyncId - 1)
+  }
+}
+
 asyncHooks.createHook({
   init (asyncId, type, triggerAsyncId) {
+    const executionAsyncId = asyncHooks.executionAsyncId()
+
     contexts[asyncId] = {
-      id: asyncHooks.executionAsyncId(),
+      id: executionAsyncId,
+      type,
       __tm: Date.now()
     }
 
-    if (type === 'TCPWRAP') {
-      // app start rootId
-      rootAsyncIdQueueMap[asyncId] = []
-    }
-
-    // push asyncId to root callstack
-    const rootID = findRootId(asyncId)
-    if (rootID) {
-      rootAsyncIdQueueMap[rootID].push(asyncId)
+    const rootId = findRootId(executionAsyncId)
+    if (rootId && rootAsyncIdQueueMap[rootId]) {
+      rootAsyncIdQueueMap[rootId].push(asyncId)
     }
   },
   destroy (asyncId) {
@@ -63,23 +68,27 @@ asyncHooks.createHook({
       })
       delete rootAsyncIdQueueMap[asyncId]
     }
-    if (!findRootId(asyncId)) {
-      delete contexts[asyncId]
-    }
   }
 }).enable()
 
+const middleware = () => {
+  const executionAsyncId = asyncHooks.executionAsyncId()
+  const rootId = findTCPWrapAsyncId(executionAsyncId)
+  contexts[rootId].data = {}
+  contexts[executionAsyncId] = {
+    id: rootId,
+    __tm: Date.now()
+  }
+  rootAsyncIdQueueMap[rootId] = [executionAsyncId]
+}
+
 module.exports = {
   middleware: (req, res, next) => {
-    const executionAsyncId = asyncHooks.executionAsyncId()
-    contexts[executionAsyncId].data = {}
-    rootAsyncIdQueueMap[executionAsyncId] = []
+    middleware()
     next()
   },
   koaMiddleware: async (ctx, next) => {
-    const executionAsyncId = asyncHooks.executionAsyncId()
-    contexts[executionAsyncId].data = {}
-    rootAsyncIdQueueMap[executionAsyncId] = []
+    middleware()
     await next()
   },
   set: (key, value) => {
