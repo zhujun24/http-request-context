@@ -2,24 +2,26 @@ const asyncHooks = require('async_hooks')
 
 const contexts = {} // all callstack map
 const rootAsyncIdQueueMap = {} // request root callstack
-const INTERVAL = process.env.HTTP_REQUEST_CONTEXT_INTERVAL || 10000 // remove expired context interval
-const ASYNC_ID_TIMEOUT = process.env.HTTP_REQUEST_CONTEXT_TIMEOUT || 150000 // context expire time (must be longer than full cycle of a request)
+/* istanbul ignore next */
+const CALLSTACK_REMOVE_INTERVAL = parseInt(process.env.HTTP_REQUEST_CONTEXT_INTERVAL) || 10000 // remove expired context interval
+/* istanbul ignore next */
+const CALLSTACK_EXPIRE = parseInt(process.env.HTTP_REQUEST_CONTEXT_EXPIRE) || 150000 // context expire time (must be longer than full cycle of a request)
 
 // delete asyncId map 60s ago every second
 const interval = () => {
-  setTimeout(interval, INTERVAL)
+  setTimeout(interval, CALLSTACK_REMOVE_INTERVAL)
 
   const now = Date.now()
 
   for (const asyncId of Object.keys(contexts)) {
-    if (now - contexts[asyncId].__tm < ASYNC_ID_TIMEOUT) {
+    if (now - contexts[asyncId].__tm < CALLSTACK_EXPIRE) {
       break
     } else {
       delete contexts[asyncId]
     }
   }
 }
-setTimeout(interval, INTERVAL)
+setTimeout(interval, CALLSTACK_REMOVE_INTERVAL)
 
 // find callstack root
 const findRootId = (id) => {
@@ -36,6 +38,7 @@ const findRootId = (id) => {
 
 // find TCPWrap root
 const findTCPWrapAsyncId = asyncId => {
+  /* istanbul ignore else */
   if (contexts[asyncId]) {
     if (contexts[asyncId].type === 'TCPWRAP') {
       return asyncId
@@ -87,18 +90,23 @@ module.exports = {
     middleware()
     next()
   },
+
   koaMiddleware: async (ctx, next) => {
     middleware()
     await next()
   },
+
   set: (key, value) => {
     const rootId = findRootId(asyncHooks.executionAsyncId())
+    /* istanbul ignore else */
     if (rootId) {
       Object.assign(contexts[rootId].data, { [key]: value })
     }
   },
+
   get: (key) => {
     const rootId = findRootId(asyncHooks.executionAsyncId())
+    /* istanbul ignore else */
     if (rootId) {
       return contexts[rootId].data[key]
     }

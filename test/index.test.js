@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 
-process.env.HTTP_REQUEST_CONTEXT_INTERVAL = 1000
-process.env.HTTP_REQUEST_CONTEXT_TIMEOUT = 1000
+process.env.HTTP_REQUEST_CONTEXT_INTERVAL = 200
+process.env.HTTP_REQUEST_CONTEXT_EXPIRE = 100
 
 const chai = require('chai')
 const chaiHttp = require('chai-http')
@@ -19,7 +19,7 @@ const koaApp = new Koa()
 // Ensure timer execution and increase coverage
 const sleep = () => new Promise(resolve => {
   // large than interval and timeout
-  setTimeout(resolve, 1200)
+  setTimeout(resolve, 300)
 })
 
 chai.use(chaiHttp)
@@ -32,7 +32,7 @@ describe('Express Middleware Test', function () {
       setTimeout(function () {
         httpRequestContext.set('key', 'value')
         next()
-      }, 100)
+      }, 50)
     })
 
     expressApp.use(function (req, res) {
@@ -61,7 +61,7 @@ describe('Koa Middleware Test', async function () {
         setTimeout(() => {
           httpRequestContext.set('key', 'value')
           resolve()
-        }, 100)
+        }, 50)
       })
       await next()
     })

@@ -24,8 +24,8 @@ Parameter configuration must be require before, but normally no config are requi
 
 | Name | Description | Default |
 |:------------|:------------|:------------|
-| process.env.HTTP_REQUEST_CONTEXT_INTERVAL | remove expired context interval(ms) | 10000
-| process.env.HTTP_REQUEST_CONTEXT_TIMEOUT | context expire time(ms)| 150000
+| process.env.HTTP_REQUEST_CONTEXT_INTERVAL | remove expired callstack interval(ms) | 10000
+| process.env.HTTP_REQUEST_CONTEXT_EXPIRE | callstack expire time(ms)| 150000
 
 ## Example
 
