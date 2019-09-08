@@ -27,6 +27,21 @@ Parameter configuration must be require before, but normally no config are requi
 | process.env.HTTP_REQUEST_CONTEXT_INTERVAL | remove expired callstack interval(ms) | 10000
 | process.env.HTTP_REQUEST_CONTEXT_EXPIRE | callstack expire time(ms)| 150000
 
+## Middleware
+
+- `httpRequestContext.middleware` Express middleware.
+- `httpRequestContext.koaMiddleware` Koa middleware.
+
+## Set Context
+
+- `httpRequestContext.set(key, value)` Set context anywhere.
+- `httpRequestContext.set({ key: value })` This is also OK.
+
+## Get Context
+
+- `httpRequestContext.get(key)` Get the `[key]` attribute of the context.
+- `httpRequestContext.get()` Gets an object containing all context properties.
+
 ## Example
 
 see [example](https://github.com/zhujun24/http-request-context/tree/master/example)

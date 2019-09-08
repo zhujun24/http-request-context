@@ -31,11 +31,13 @@ describe('Express Middleware Test', function () {
     expressApp.use((req, res, next) => {
       setTimeout(function () {
         httpRequestContext.set('key', 'value')
+        httpRequestContext.set({ improve: 'coverage' }) // improve set func coverage
         next()
       }, 50)
     })
 
     expressApp.use(function (req, res) {
+      httpRequestContext.get() // improve get func coverage
       res.send(httpRequestContext.get('key'))
     })
 
