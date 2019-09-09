@@ -1,6 +1,7 @@
 # HTTP Request Context
 
 [![npm package](https://nodei.co/npm/http-request-context.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/http-request-context)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fzhujun24%2Fhttp-request-context.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fzhujun24%2Fhttp-request-context?ref=badge_shield)
 
 [![Build Status](https://travis-ci.org/zhujun24/http-request-context.svg)](https://travis-ci.org/zhujun24/http-request-context)
 [![Coverage Status](https://coveralls.io/repos/github/zhujun24/http-request-context/badge.svg?branch=master)](https://coveralls.io/github/zhujun24/http-request-context?branch=master)
@@ -138,3 +139,7 @@ util.promisify(mysqlConnection.query).bind(mysqlConnection)('SELECT * FROM table
   })
   .catch(error => {})
 ```
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fzhujun24%2Fhttp-request-context.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fzhujun24%2Fhttp-request-context?ref=badge_large)
