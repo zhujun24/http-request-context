@@ -4,7 +4,10 @@
 
 [![Build Status](https://travis-ci.org/zhujun24/http-request-context.svg)](https://travis-ci.org/zhujun24/http-request-context)
 [![Coverage Status](https://coveralls.io/repos/github/zhujun24/http-request-context/badge.svg?branch=master)](https://coveralls.io/github/zhujun24/http-request-context?branch=master)
+[![Known Vulnerabilities](https://snyk.io//test/github/zhujun24/http-request-context/badge.svg?targetFile=package.json)](https://snyk.io//test/github/zhujun24/http-request-context?targetFile=package.json)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fzhujun24%2Fhttp-request-context.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fzhujun24%2Fhttp-request-context?ref=badge_shield)
 [![npm package](https://img.shields.io/npm/v/http-request-context.svg)](https://www.npmjs.com/package/http-request-context)
+
 [![NPM downloads](https://img.shields.io/npm/dm/http-request-context.svg)](https://www.npmjs.com/package/http-request-context)
 [![Dependency Status](https://david-dm.org/zhujun24/http-request-context.svg)](https://www.npmjs.com/package/http-request-context)
 [![Dependency Status](https://david-dm.org/zhujun24/http-request-context/dev-status.svg)](https://www.npmjs.com/package/http-request-context)
@@ -42,13 +45,15 @@ Parameter configuration must be require before, but normally no config are requi
 - `httpRequestContext.get(key)` Get the `[key]` attribute of the context.
 - `httpRequestContext.get()` Gets an object containing all context properties.
 
-## Example
-
-see [example](https://github.com/zhujun24/http-request-context/tree/master/example)
-
 ## How to Use
 
-Install: `npm install http-request-context --save`
+see [example](https://github.com/zhujun24/http-request-context/tree/master/example) here.
+
+### Install
+
+```npm
+npm install http-request-context --save
+```
 
 ### Express
 
@@ -122,6 +127,10 @@ httpRequestContext.get('foo') // 'bar'
 ### MySQL
 
 If you init mysql connect before http server start, you may get context undefined in mysql query callback scope.
+
+[googleapis/cloud-trace-nodejs #946](https://github.com/googleapis/cloud-trace-nodejs/issues/946)
+
+[nodejs/node #22360](https://github.com/nodejs/node/issues/22360)
 
 ```js
 mysqlConnection.query('SELECT * FROM table', (error, results, fields) => {

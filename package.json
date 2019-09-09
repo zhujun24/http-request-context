@@ -1,6 +1,6 @@
 {
   "name": "http-request-context",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Store context in http middleware lifecycle.",
   "main": "index.js",
   "engines": {
