@@ -1,5 +1,6 @@
 const asyncHooks = require('async_hooks')
 
+const TCPWRAP_NAME = 'TCPWRAP'
 const callstackMap = {} // all callstack map
 const TCPWrapCallstackContainers = {} // request root callstack
 /* istanbul ignore next */
@@ -42,7 +43,7 @@ const findRootId = id => {
 const findTCPWrapAsyncId = asyncId => {
   /* istanbul ignore else */
   if (callstackMap[asyncId]) {
-    if (callstackMap[asyncId].type === 'TCPWRAP') {
+    if (callstackMap[asyncId].type === TCPWRAP_NAME) {
       return asyncId
     }
     return findTCPWrapAsyncId(asyncId - 1)
@@ -50,7 +51,7 @@ const findTCPWrapAsyncId = asyncId => {
 }
 
 asyncHooks.createHook({
-  init (asyncId, type, triggerAsyncId) {
+  init (asyncId, type) {
     const executionAsyncId = asyncHooks.executionAsyncId()
 
     callstackMap[asyncId] = {
@@ -62,16 +63,6 @@ asyncHooks.createHook({
     const rootId = findRootId(executionAsyncId)
     if (rootId && TCPWrapCallstackContainers[rootId]) {
       TCPWrapCallstackContainers[rootId].push(asyncId)
-    }
-  },
-  destroy (asyncId) {
-    // delete root & all callstack
-    if (TCPWrapCallstackContainers[asyncId]) {
-      delete callstackMap[asyncId]
-      TCPWrapCallstackContainers[asyncId].forEach(id => {
-        delete callstackMap[id]
-      })
-      delete TCPWrapCallstackContainers[asyncId]
     }
   }
 }).enable()

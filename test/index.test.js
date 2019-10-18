@@ -41,13 +41,15 @@ describe('Express Middleware Test', function () {
       res.send(httpRequestContext.get('key'))
     })
 
-    expressApp.listen(expressPort, function () {
+    const server = expressApp.listen(expressPort, function () {
       console.log(`Express is listening at port ${expressPort}`)
     })
 
     await sleep()
 
-    const response = await chai.request(`http://127.0.0.1:${expressPort}`).get('/')
+    const response = await chai.request(server).get('/')
+
+    server.close()
 
     assert.strictEqual(200, response.status)
     assert.strictEqual('value', response.text)
@@ -72,13 +74,15 @@ describe('Koa Middleware Test', async function () {
       ctx.body = httpRequestContext.get('key')
     })
 
-    koaApp.listen(koaPort, function () {
+    const server = koaApp.listen(koaPort, function () {
       console.log(`Koa is listening at port ${koaPort}`)
     })
 
     await sleep()
 
-    const response = await chai.request(`http://127.0.0.1:${koaPort}`).get('/')
+    const response = await chai.request(server).get('/')
+
+    server.close()
 
     assert.strictEqual(200, response.status)
     assert.strictEqual('value', response.text)
