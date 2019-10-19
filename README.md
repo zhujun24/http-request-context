@@ -47,6 +47,8 @@ Parameter configuration must be require before, but normally no config are requi
 
 ## How to Use
 
+**Do not use any middleware that contains asynchronous operations before this middleware.**
+
 see [example](https://github.com/zhujun24/http-request-context/tree/master/example) here.
 
 ### Install

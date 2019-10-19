@@ -2,7 +2,7 @@ const util = require('util')
 const express = require('express')
 const httpRequestContext = require('../')
 
-var app = express()
+const app = express()
 
 app.use(httpRequestContext.middleware)
 
