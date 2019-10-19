@@ -2,7 +2,6 @@ const asyncHooks = require('async_hooks')
 
 const TCPWRAP_NAME = 'TCPWRAP'
 const callstackMap = {} // all callstack map
-const TCPWrapCallstackContainers = {} // request root callstack
 /* istanbul ignore next */
 const CALLSTACK_REMOVE_INTERVAL = parseInt(process.env.HTTP_REQUEST_CONTEXT_INTERVAL) || 10000 // remove expired context interval
 /* istanbul ignore next */
@@ -28,9 +27,7 @@ setTimeout(interval, CALLSTACK_REMOVE_INTERVAL)
 
 // find callstack root
 const findRootId = id => {
-  if (!id) {
-    return
-  }
+  /* istanbul ignore else */
   if (callstackMap[id]) {
     if (callstackMap[id].data) {
       return id
@@ -59,11 +56,6 @@ asyncHooks.createHook({
       type,
       __tm: Date.now()
     }
-
-    const rootId = findRootId(executionAsyncId)
-    if (rootId && TCPWrapCallstackContainers[rootId]) {
-      TCPWrapCallstackContainers[rootId].push(asyncId)
-    }
   }
 }).enable()
 
@@ -75,7 +67,6 @@ const middleware = () => {
     id: rootId,
     __tm: Date.now()
   }
-  TCPWrapCallstackContainers[rootId] = [executionAsyncId]
 }
 
 module.exports = {
