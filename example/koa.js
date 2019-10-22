@@ -4,7 +4,7 @@ const httpRequestContext = require('../')
 
 const app = new Koa()
 
-app.use(httpRequestContext.koaMiddleware)
+app.use(httpRequestContext.koaMiddleware())
 
 app.use(async (ctx, next) => {
   httpRequestContext.set('name', 'zhujun24')

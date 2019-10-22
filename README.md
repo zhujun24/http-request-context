@@ -13,7 +13,7 @@
 [![Dependency Status](https://david-dm.org/zhujun24/http-request-context/dev-status.svg)](https://www.npmjs.com/package/http-request-context)
 [![Standard - JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://www.npmjs.com/package/http-request-context)
 
-Set and get request-scoped context anywhere.
+Set and Get request-scoped context anywhere.
 
 ## Requirement
 
@@ -21,19 +21,41 @@ Set and get request-scoped context anywhere.
 
 This module uses the newer [async_hooks](https://github.com/nodejs/node/blob/master/doc/api/async_hooks.md) API which is considered `Experimental` by Nodejs.
 
-## Parameter
+## Options
 
-Parameter configuration must be require before, but normally no config are required.
+| Option | Description | Type | Default |
+|:------------|:------------|:------------|:------------|
+| interval | remove expired callstack interval(s) | Number | 10
+| expire | callstack expire time(s)| Number | 150
+| removeAfterFinish | remove callstack after [http.ServerResponse](https://nodejs.org/api/http.html#http_class_http_serverresponse) [finish](https://nodejs.org/api/http.html#http_event_finish) | Boolean | false
+| removeAfterClose | remove callstack after [http.ServerResponse](https://nodejs.org/api/http.html#http_class_http_serverresponse) [close](https://nodejs.org/api/http.html#http_event_close) | Boolean | false
 
-| Name | Description | Default |
-|:------------|:------------|:------------|
-| process.env.HTTP_REQUEST_CONTEXT_INTERVAL | remove expired callstack interval(ms) | 10000
-| process.env.HTTP_REQUEST_CONTEXT_EXPIRE | callstack expire time(ms)| 150000
+#### options.interval
 
-## Middleware
+Remove expired callstack interval, used like `setInterval(removeExpiredCallstack, interval)`.
 
-- `httpRequestContext.middleware` Express middleware.
-- `httpRequestContext.koaMiddleware` Koa middleware.
+#### options.expire
+
+Callstack expire time, must be longer than full lifecycle of a request.
+
+#### options.removeAfterFinish
+
+It will actively remove the relevant callstack after [http.ServerResponse](https://nodejs.org/api/http.html#http_class_http_serverresponse) [finish](https://nodejs.org/api/http.html#http_event_finish).
+
+If set to `true`, you can get the context synchronously in the finish event, but not asynchronous. The benefit is that it can improve the performance of this middleware.
+
+#### options.removeAfterClose
+
+This is very similar to `options.removeAfterFinish`, the difference is that after the close event.
+
+Please Note! if set to `true`, in some cases, the close event may be caused by the client terminating the request, after the close event, we may still use the context after the incomplete asynchronous operation is completed, this will result in loss of context.
+
+## Init Middleware
+
+**Do not use any middleware that contains asynchronous operations before this middleware.**
+
+- `httpRequestContext.middleware(options)` Init Express middleware.
+- `httpRequestContext.koaMiddleware(options)` Init Koa middleware.
 
 ## Set Context
 
@@ -46,8 +68,6 @@ Parameter configuration must be require before, but normally no config are requi
 - `httpRequestContext.get()` Gets an object containing all context properties.
 
 ## How to Use
-
-**Do not use any middleware that contains asynchronous operations before this middleware.**
 
 see [example](https://github.com/zhujun24/http-request-context/tree/master/example) here.
 
@@ -64,7 +84,7 @@ npm install http-request-context --save
 ```js
 const httpRequestContext = require('http-request-context')
 
-app.use(httpRequestContext.middleware)
+app.use(httpRequestContext.middleware())
 ```
 
 ##### Set Context
@@ -96,7 +116,7 @@ httpRequestContext.get('foo') // 'bar'
 ```js
 const httpRequestContext = require('http-request-context')
 
-app.use(httpRequestContext.koaMiddleware)
+app.use(httpRequestContext.koaMiddleware())
 ```
 
 ##### Set Context
@@ -126,7 +146,7 @@ httpRequestContext.get('foo') // 'bar'
 
 ## Tips
 
-### MySQL
+#### MySQL lost context
 
 If you init mysql connect before http server start, you may get context undefined in mysql query callback scope.
 

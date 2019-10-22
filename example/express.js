@@ -4,7 +4,7 @@ const httpRequestContext = require('../')
 
 const app = express()
 
-app.use(httpRequestContext.middleware)
+app.use(httpRequestContext.middleware())
 
 app.use((req, res, next) => {
   httpRequestContext.set('name', 'zhujun24')
