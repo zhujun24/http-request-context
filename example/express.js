@@ -4,12 +4,15 @@ const httpRequestContext = require('../')
 
 const app = express()
 
-app.use(httpRequestContext.middleware())
+app.use(httpRequestContext.middleware({
+  removeAfterClose: true,
+  removeAfterFinish: true
+}))
 
 app.use((req, res, next) => {
   httpRequestContext.set('name', 'zhujun24')
   res.on('close', () => {
-    console.log('close', httpRequestContext.get('name'))
+    console.log('close', httpRequestContext.get('name', res))
   })
   res.on('finish', () => {
     console.log('finish', httpRequestContext.get('name'))

@@ -4,12 +4,15 @@ const httpRequestContext = require('../')
 
 const app = new Koa()
 
-app.use(httpRequestContext.koaMiddleware())
+app.use(httpRequestContext.koaMiddleware({
+  removeAfterClose: true,
+  removeAfterFinish: true
+}))
 
 app.use(async (ctx, next) => {
   httpRequestContext.set('name', 'zhujun24')
   ctx.res.on('close', () => {
-    console.log('close', httpRequestContext.get('name'))
+    console.log('close', httpRequestContext.get('name', ctx.res))
   })
   ctx.res.on('finish', () => {
     console.log('finish', httpRequestContext.get('name'))

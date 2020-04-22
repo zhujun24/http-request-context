@@ -28,7 +28,7 @@ This module uses the newer [async_hooks](https://github.com/nodejs/node/blob/mas
 | interval | remove expired callstack interval(s) | Number | 10
 | expire | callstack expire time(s)| Number | 150
 | removeAfterFinish | remove callstack after [http.ServerResponse](https://nodejs.org/api/http.html#http_class_http_serverresponse) [finish](https://nodejs.org/api/http.html#http_event_finish) | Boolean | false
-| removeAfterClose | remove callstack after [http.ServerResponse](https://nodejs.org/api/http.html#http_class_http_serverresponse) [close](https://nodejs.org/api/http.html#http_event_close) | Boolean | false
+| removeAfterClose | remove callstack after [http.ServerResponse](https://nodejs.org/api/http.html#http_class_http_serverresponse) [close](https://nodejs.org/api/http.html#http_event_close_1) | Boolean | false
 
 #### options.interval
 
@@ -82,7 +82,7 @@ npm install http-request-context --save
 ##### Init
 
 ```js
-const httpRequestContext = require('http-request-context')
+import httpRequestContext from 'http-request-context'
 
 app.use(httpRequestContext.middleware())
 ```
@@ -90,7 +90,7 @@ app.use(httpRequestContext.middleware())
 ##### Set Context
 
 ```js
-const httpRequestContext = require('http-request-context')
+import httpRequestContext from 'http-request-context'
 
 // set context by key-value
 app.use((req, res, next) => {
@@ -104,7 +104,7 @@ app.use((req, res, next) => {
 ##### Get Context
 
 ```js
-const httpRequestContext = require('http-request-context')
+import httpRequestContext from 'http-request-context'
 
 httpRequestContext.get('foo') // 'bar'
 ```
@@ -114,7 +114,7 @@ httpRequestContext.get('foo') // 'bar'
 ##### Init
 
 ```js
-const httpRequestContext = require('http-request-context')
+import httpRequestContext from 'http-request-context'
 
 app.use(httpRequestContext.koaMiddleware())
 ```
@@ -122,7 +122,7 @@ app.use(httpRequestContext.koaMiddleware())
 ##### Set Context
 
 ```js
-const httpRequestContext = require('http-request-context')
+import httpRequestContext from 'http-request-context'
 
 // set context by key-value
 app.use(async (ctx, next) => {
@@ -139,14 +139,30 @@ app.use(async (ctx, next) => {
 ##### Get Context
 
 ```js
-const httpRequestContext = require('http-request-context')
+import httpRequestContext from 'http-request-context'
 
 httpRequestContext.get('foo') // 'bar'
 ```
 
-## Tips
+## Lost Context Tips
 
-#### MySQL lost context
+#### http.ServerResponse close event
+
+Sometimes, when client terminal request by close window or reload page, it will cause http.ServerResponse emit 'close' event, this event is trigger by root, so it break away from current request scope, in this case, we can add `res`(express) or `ctx.res`(koa) parameter to get context function to ensure context can be tracked, as follows:
+
+```js
+// Express
+res.on('close', () => {
+  console.log('close', httpRequestContext.get('foo', res))
+})
+
+// Koa
+ctx.res.on('close', () => {
+  console.log('close', httpRequestContext.get('foo', ctx.res))
+})
+```
+
+#### MySQL
 
 If you init mysql connect before http server start, you may get context undefined in mysql query callback scope.
 
