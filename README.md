@@ -19,7 +19,7 @@ Set and Get request-scoped context anywhere.
 
 ### Nodejs version >= 8.2.0
 
-This module uses the newer [async_hooks](https://github.com/nodejs/node/blob/master/doc/api/async_hooks.md) API which is considered `Experimental` by Nodejs.
+This module uses the newer [async_hooks](https://nodejs.org/api/async_hooks.html#async_hooks_async_hooks) API which is considered `Experimental` by Nodejs.
 
 ## Options
 
@@ -52,7 +52,7 @@ Please Note! if set to `true`, in some cases, the close event may be caused by t
 
 ## Init Middleware
 
-**Do not use any middleware that contains asynchronous operations before this middleware.**
+**This module is recommend as a "top-level" middleware for ensure all context can be tracked**
 
 - `httpRequestContext.middleware(options)` Init Express middleware.
 - `httpRequestContext.koaMiddleware(options)` Init Koa middleware.
@@ -79,7 +79,7 @@ npm install http-request-context --save
 
 ### Express
 
-##### Init
+#### Init
 
 ```js
 import httpRequestContext from 'http-request-context'
@@ -87,7 +87,7 @@ import httpRequestContext from 'http-request-context'
 app.use(httpRequestContext.middleware())
 ```
 
-##### Set Context
+#### Set Context
 
 ```js
 import httpRequestContext from 'http-request-context'
@@ -101,7 +101,7 @@ app.use((req, res, next) => {
 })
 ```
 
-##### Get Context
+#### Get Context
 
 ```js
 import httpRequestContext from 'http-request-context'
@@ -111,7 +111,7 @@ httpRequestContext.get('foo') // 'bar'
 
 ### Koa
 
-##### Init
+#### Init
 
 ```js
 import httpRequestContext from 'http-request-context'
@@ -119,7 +119,7 @@ import httpRequestContext from 'http-request-context'
 app.use(httpRequestContext.koaMiddleware())
 ```
 
-##### Set Context
+#### Set Context
 
 ```js
 import httpRequestContext from 'http-request-context'
@@ -148,7 +148,7 @@ httpRequestContext.get('foo') // 'bar'
 
 #### http.ServerResponse close event
 
-Sometimes, when client terminal request by close window or reload page, it will cause http.ServerResponse emit 'close' event, this event is trigger by root, so it break away from current request scope, in this case, we can add `res`(express) or `ctx.res`(koa) parameter to get context function to ensure context can be tracked, as follows:
+Sometimes, when client terminate request by close window or reload page, it will cause http.ServerResponse emit 'close' event, this event is trigger by root, so it break away from current request scope, in this case, we can add `res`(express) or `ctx.res`(koa) parameter to get context function to ensure context can be tracked, as follows:
 
 ```js
 // Express
